@@ -1,5 +1,23 @@
 # Broken Dockerfiles and Existing Tools
 
+## Assumptions
+
+If you wish to run things from this directory, simply using a terminal with `bash` should be enough (to use `./generate.sh` docker is required).  We recommend running this through our top-level directory which utilizes a pre-configured docker container.
+
+## Too Long Didn't Read (TLDR)
+
+Run `./analyze.sh` and you should see the percentage of broken Dockerfiles that static tools (binnacle and hadolint) can identify. In addition, you'll see our calculation of the total percent of broken Dockerfiles in our dataset.
+
+The output of `./analyze.sh` should look like this:
+
+```
+Overall build breakage rate: 26.3 
+Binnacle detects: 20.6 of possible build-breaking issues.
+Hadolint detects: 33.8 of possible build-breaking issues.
+```
+
+## Details
+
 ```
 How prevalent are Dockerfile build failures in projects that use Docker on GitHub?
 
@@ -8,7 +26,7 @@ Can existing (static) tools identify the failure-inducing issues within these br
 
 Here, we reproduce results related to RQ1 in our paper. In particular, we include scripts to calculate the percentage of build failures in the projects we analyzed. Furthermore, we provide scripts for running two pre-existing (static) Dockerfile analysis tools and post-processing the output to look for _build failure related_ issues. This is an important step: as most of the warnings produced by static tools will be related to, more generally, Dockerfile _smells_ (that is, violations of best practices which may result in increased image size or insecure containers, for instance).
 
-## Running Binnacle and Hadolint
+### Running Binnacle and Hadolint
 
 Using the `./generate.sh` script we can run `binnacle` and `hadolint` on the `./data/broken-dockerfiles` repository to see which broken files are flagged by either tool. **This process is very time consuming.**
 
