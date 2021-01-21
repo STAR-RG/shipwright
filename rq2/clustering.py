@@ -10,10 +10,14 @@ import tqdm
 
 from sentence_transformers import SentenceTransformer
 
+DATA_PREFIX=(
+    os.environ['DATA_PREFIX'] if 'DATA_PREFIX' in os.environ else '/app/data'
+)
+
 print('Loading gzipped data...')
 data = []
-for file in tqdm.tqdm(os.listdir('/data/for-clustering'), desc="Loading:>"):
-    with gzip.GzipFile('/data/for-clustering/' + file, 'r') as fin:
+for file in tqdm.tqdm(os.listdir(DATA_PREFIX + '/for-clustering'), desc="Loading:>"):
+    with gzip.GzipFile(DATA_PREFIX + '/for-clustering/' + file, 'r') as fin:
         data.append(json.loads(fin.read().decode('utf-8')))
 print('  + Done!')
 

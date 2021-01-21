@@ -41,3 +41,4 @@ In this question, we sought to understand the efficacy of our clustering approac
 
 **NOTE: we do not recommend running `./clustering.py --do-clustering` as part of the artifact evaluation.** The clustering process works best on a GPU enabled machine and takes considerable time (especially searching over hyper-parameters). We've provided this code so others can build on our work---but, in addition, we have simply included the outputs of clustering and the pre-processed data we used to generate clusters so that others can avoid running the actual clustering step (or, if they wish, can build new clustering methodology on similar data).
 
+_NOTE for running locally (not using `./shipwright.sh`): we assume this script runs in a docker container with a specific environment. To override this when running local, you should set the `DATA_PREFIX` environment variable to point to this repositories `./data` directory._

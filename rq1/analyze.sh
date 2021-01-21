@@ -11,7 +11,7 @@ TOTAL_BROKEN_FILES=$(
     wc -l | awk '{print $1}'
 )
 
-printf "Overall build breakage rate: %.1f \n" \
+printf "Overall build breakage rate: %.1f%%\n" \
   $(echo "${TOTAL_BROKEN_FILES}.0/${TOTAL_BUILT_FILES}.0*100.0" | bc -l)
 
 BINNACLE_CAUGHT=$(
@@ -24,7 +24,7 @@ HADOLINT_CAUGHT=$(
     grep -v '0' | wc -l | awk '{print $1}'
 )
 
-printf "Binnacle detects: %.1f of possible build-breaking issues.\n" \
+printf "Binnacle detects: %.1f%% of possible build-breaking issues.\n" \
   $(echo "${BINNACLE_CAUGHT}.0/${TOTAL_BROKEN_FILES}.0*100.0" | bc -l)
-printf "Hadolint detects: %.1f of possible build-breaking issues.\n" \
+printf "Hadolint detects: %.1f%% of possible build-breaking issues.\n" \
   $(echo "${HADOLINT_CAUGHT}.0/${TOTAL_BROKEN_FILES}.0*100.0" | bc -l)
