@@ -9,5 +9,3 @@ git clone https://github.com/STAR-RG/shipwright
 
 cd ./shipwright
 ```
-
-**Note:** when we give example commands and instruction, we assume you are working in the root directory of the `shipwright` git repository.
