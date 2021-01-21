@@ -1,0 +1,50 @@
+[
+  {
+    "raw_dockerfile": "RUN mkdir -p /home/nodeapp\n\nADD . /home/nodeapp\nWORKDIR /home/nodeapp\n\nEXPOSE 8555\n\nCMD  [\"node\",\"./src/tool/startDPeer.js\",\"--main\",\"--loggerLevel\",\"info\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon  5.194MB",
+    "raw_stderr_log": "Error response from daemon: No build stage in current context",
+    "html_url": "https://github.com/intfoundation/int",
+    "repo_commit": "c007d64ed7139877d7c49528408b72c743f060e4",
+    "repo_id": 129263531
+  },
+  {
+    "raw_dockerfile": "# Define default command.\nCMD [\"node\", \"server\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon  222.7kB",
+    "raw_stderr_log": "Error response from daemon: No build stage in current context",
+    "html_url": "https://github.com/PatrickJS/koa-angular-seed",
+    "repo_commit": "1d1c50c94b8b6d0c8fe0948d8a7557dd4b1b1fcc",
+    "repo_id": 15367254
+  },
+  {
+    "raw_dockerfile": "#  Copyright (C) 2018-2019 LEIDOS.\n# \n#  Licensed under the Apache License, Version 2.0 (the \"License\"); you may not\n#  use this file except in compliance with the License. You may obtain a copy of\n#  the License at\n# \n#  http://www.apache.org/licenses/LICENSE-2.0\n# \n#  Unless required by applicable law or agreed to in writing, software\n#  distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT\n#  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the\n#  License for the specific language governing permissions and limitations under\n#  the License.\n\n# V2X-Hub CI Image Docker Configuration Script\n\n\n\n# Set environment variable for SonarQube Binaries\n# Two binaries are will go in this repo. \n# The Build Wrapper which executes a code build to capture C++\n# The Sonar Scanner which evaluates both C++ and Java then uploads the results to SonarCloud\nENV SONAR_DIR=/opt/sonarqube\n\n# Pull scanner from internet\nRUN sudo apt-get -y install curl && \\\n        sudo mkdir $SONAR_DIR && \\\n        sudo curl -o $SONAR_DIR/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip && \\\n        sudo curl -o $SONAR_DIR/build-wrapper.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && \\\n        # Install Dependancy of NodeJs 6+\n        sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash - && \\\n        sudo sudo apt-get install -y nodejs && \\\n        # Install JQ Json Parser Tool\n        sudo mkdir /opt/jq && \\\n        sudo curl -L \"https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64\" -o /opt/jq/jq && \\\n        sudo chmod +x /opt/jq/jq\n\n\n# Unzip scanner\nRUN cd $SONAR_DIR && \\ \n        sudo apt-get -y install unzip && \\\n        sudo unzip $SONAR_DIR/sonar-scanner.zip -d . && \\\n        sudo unzip $SONAR_DIR/build-wrapper.zip -d . && \\\n        # Remove zip files \n        sudo rm $SONAR_DIR/sonar-scanner.zip && \\\n        sudo rm $SONAR_DIR/build-wrapper.zip && \\\n        # Rename files \n        sudo mv $(ls $SONAR_DIR | grep \"sonar-scanner-\") $SONAR_DIR/sonar-scanner/ && \\\n        sudo mv $(ls $SONAR_DIR | grep \"build-wrapper-\") $SONAR_DIR/build-wrapper/ && \\\n        # Add scanner, wrapper, and jq to PATH\n        sudo echo 'export PATH=$PATH:/opt/jq/:$SONAR_DIR/sonar-scanner/bin/:$SONAR_DIR/build-wrapper/' >> /home/carma/.base-image/init-env.sh\n\n# Set metadata labels\nLABEL org.label-schema.schema-version=\"1.0\"\nLABEL org.label-schema.name=\"V2X-Hub-SonarCloud\"\nLABEL org.label-schema.description=\"Base image for CARMA CI testing using SonarCloud\"\nLABEL org.label-schema.vendor=\"Leidos\"\nLABEL org.label-schema.version=\"${VERSION}\"\nLABEL org.label-schema.url=\"https://highways.dot.gov/research/research-programs/operations\"\nLABEL org.label-schema.vcs-url=\"https://github.com/usdot-fhwa-ops/V2X-HUB\"\nLABEL org.label-schema.vcs-ref=${VCS_REF}\nLABEL org.label-schema.build-date=${BUILD_DATE}\n\n# Setup environment on login",
+    "raw_stdout_log": "Sending build context to Docker daemon  262.4MB",
+    "raw_stderr_log": "Error response from daemon: No build stage in current context",
+    "html_url": "https://github.com/usdot-fhwa-OPS/V2X-Hub",
+    "repo_commit": "da5e3134eceeaadadede58b168fab2c925df8ecd",
+    "repo_id": 168020929
+  },
+  {
+    "raw_dockerfile": "RUN python",
+    "raw_stdout_log": "Sending build context to Docker daemon    513kB",
+    "raw_stderr_log": "Error response from daemon: No build stage in current context",
+    "html_url": "https://github.com/timmyreilly/introduction-to-flask",
+    "repo_commit": "458e69748230e45025d378f49f06073d05c63471",
+    "repo_id": 67171053
+  },
+  {
+    "raw_dockerfile": "WORKDIR .",
+    "raw_stdout_log": "Sending build context to Docker daemon  20.49MB",
+    "raw_stderr_log": "Error response from daemon: No build stage in current context",
+    "html_url": "https://github.com/ConsenSys/eth-alerts",
+    "repo_commit": "bf35e5461480ff68b08700441dcac8c3ff33229d",
+    "repo_id": 82658865
+  },
+  {
+    "raw_dockerfile": "# <DOCKER_FROM>\n# </DOCKER_FROM>\n\n# <NODE>\nADD tools/build /stack/boilerplate\n\nENV NODE_VERSION=0.12.14 \\\n    NPM_VERSION=2.15.5\n\nRUN bash /stack/boilerplate/install.sh\n\nENV NODE_PATH=$NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules \\\n    PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH\n# </NODE>\n\n# <DOCKER_BUILD>\n# </DOCKER_BUILD>",
+    "raw_stdout_log": "Sending build context to Docker daemon  4.714MB",
+    "raw_stderr_log": "Error response from daemon: No build stage in current context",
+    "html_url": "https://github.com/aldryn/aldryn-boilerplate-bootstrap3",
+    "repo_commit": "842f5d66360e2d6415cc7aedcbe6a98548065079",
+    "repo_id": 8452115
+  }
+]

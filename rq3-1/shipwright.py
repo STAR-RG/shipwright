@@ -87,7 +87,7 @@ def main():
     for i in range(145):
         if i == 0:
             continue
-        cluster = read_json(f'../Project/k{i}.json')
+        cluster = read_json(f'../Clusters/k{i}.json')
         check_shipwright(cluster, i)
 
     print('\n\n\n')

@@ -1,0 +1,50 @@
+[
+  {
+    "raw_dockerfile": "FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.13 AS builder\nWORKDIR /go/src/github.com/openshift/service-ca-operator\nCOPY . .\nENV GO_PACKAGE github.com/openshift/service-ca-operator\nRUN go build -ldflags \"-X $GO_PACKAGE/pkg/version.versionFromGit=$(git describe --long --tags --abbrev=7 --match 'v[0-9]*')\" ./cmd/service-ca-operator\n\nFROM registry.svc.ci.openshift.org/ocp/4.4:base\nCOPY --from=builder /go/src/github.com/openshift/service-ca-operator/service-ca-operator /usr/bin/\nCOPY manifests /manifests\n# Using the vendored CRD ensures compatibility with 'oc explain'\nCOPY vendor/github.com/openshift/api/operator/v1/0000_50_service-ca-operator_02_crd.yaml /manifests/02_crd.yaml\nENTRYPOINT [\"/usr/bin/service-ca-operator\"]\nLABEL io.openshift.release.operator=true",
+    "raw_stdout_log": "Sending build context to Docker daemon  97.13MB\r\r\nStep 1/11 : FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.13 AS builder",
+    "raw_stderr_log": "unauthorized: authentication required",
+    "html_url": "https://github.com/openshift/service-ca-operator",
+    "repo_commit": "a66742c9e46c6659ebab91f8ddb4e35ce2b268a8",
+    "repo_id": 148210990
+  },
+  {
+    "raw_dockerfile": "FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.13 AS builder\nWORKDIR /go/src/github.com/openshift/cluster-kube-controller-manager-operator\nCOPY . .\nRUN make build --warn-undefined-variables\n\nFROM registry.svc.ci.openshift.org/ocp/4.4:base\nRUN mkdir -p /usr/share/bootkube/manifests/bootstrap-manifests/ /usr/share/bootkube/manifests/config/ /usr/share/bootkube/manifests/manifests/\nCOPY --from=builder /go/src/github.com/openshift/cluster-kube-controller-manager-operator/bindata/bootkube/bootstrap-manifests /usr/share/bootkube/manifests/bootstrap-manifests/\nCOPY --from=builder /go/src/github.com/openshift/cluster-kube-controller-manager-operator/bindata/bootkube/config /usr/share/bootkube/manifests/config/\nCOPY --from=builder /go/src/github.com/openshift/cluster-kube-controller-manager-operator/bindata/bootkube/manifests /usr/share/bootkube/manifests/manifests/\nCOPY --from=builder /go/src/github.com/openshift/cluster-kube-controller-manager-operator/cluster-kube-controller-manager-operator /usr/bin/\nCOPY manifests /manifests\nCOPY vendor/github.com/openshift/api/operator/v1/0000_25_kube-controller-manager-operator_01_config.crd.yaml /manifests\nLABEL io.openshift.release.operator true",
+    "raw_stdout_log": "Sending build context to Docker daemon  103.3MB\r\r\nStep 1/13 : FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.13 AS builder",
+    "raw_stderr_log": "unauthorized: authentication required",
+    "html_url": "https://github.com/openshift/cluster-kube-controller-manager-operator",
+    "repo_commit": "8ee612392a6250959d89b517a33d9f83c32d5d5f",
+    "repo_id": 148497748
+  },
+  {
+    "raw_dockerfile": "FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.13 AS builder\nWORKDIR /go/src/github.com/openshift/cluster-etcd-operator\nCOPY . .\nENV GO_PACKAGE github.com/openshift/cluster-etcd-operator\nRUN make build --warn-undefined-variables\n\nFROM registry.svc.ci.openshift.org/ocp/4.4:base\nCOPY --from=builder /go/src/github.com/openshift/cluster-etcd-operator/bindata/bootkube/bootstrap-manifests /usr/share/bootkube/manifests/bootstrap-manifests/\nCOPY --from=builder /go/src/github.com/openshift/cluster-etcd-operator/bindata/bootkube/config /usr/share/bootkube/manifests/config/\nCOPY --from=builder /go/src/github.com/openshift/cluster-etcd-operator/bindata/bootkube/manifests /usr/share/bootkube/manifests/manifests/\nCOPY --from=builder /go/src/github.com/openshift/cluster-etcd-operator/cluster-etcd-operator /usr/bin/\nCOPY manifests/ /manifests\n\nLABEL io.openshift.release.operator true",
+    "raw_stdout_log": "Sending build context to Docker daemon  80.35MB\r\r\nStep 1/12 : FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.13 AS builder",
+    "raw_stderr_log": "unauthorized: authentication required",
+    "html_url": "https://github.com/openshift/cluster-etcd-operator",
+    "repo_commit": "7b7e5444b07cc9c6dc9d908cc1c708dbb8338736",
+    "repo_id": 161843366
+  },
+  {
+    "raw_dockerfile": "FROM registry.svc.ci.openshift.org/openshift/release:golang-1.13 as builder\nWORKDIR /go/src/github.com/openshift/cloud-credential-operator\nCOPY . .\nENV GO_PACKAGE github.com/openshift/cloud-credential-operator\nRUN go build -ldflags \"-X $GO_PACKAGE/pkg/version.versionFromGit=$(git describe --long --tags --abbrev=7 --match 'v[0-9]*')\" ./cmd/cloud-credential-operator\n\nFROM registry.svc.ci.openshift.org/ocp/4.5:base\nCOPY --from=builder /go/src/github.com/openshift/cloud-credential-operator/cloud-credential-operator /usr/bin/\nCOPY manifests /manifests\n# Update perms so we can copy updated CA if needed\nRUN chmod -R g+w /etc/pki/ca-trust/extracted/pem/\nLABEL io.openshift.release.operator=true\n# TODO make path explicit here to remove need for ENTRYPOINT\n# https://github.com/openshift/installer/blob/a8ddf6619794416c4600a827c2d9284724d382d8/data/data/bootstrap/files/usr/local/bin/bootkube.sh.template#L347\nENTRYPOINT [ \"/usr/bin/cloud-credential-operator\" ]",
+    "raw_stdout_log": "Sending build context to Docker daemon  125.2MB\r\r\nStep 1/11 : FROM registry.svc.ci.openshift.org/openshift/release:golang-1.13 as builder\ngolang-1.13: Pulling from openshift/release\n524b0c1e57f8: Pulling fs layer\nc9a0ccdd60cf: Pulling fs layer\n524b0c1e57f8: Verifying Checksum\n524b0c1e57f8: Download complete\nc9a0ccdd60cf: Verifying Checksum\nc9a0ccdd60cf: Download complete\n524b0c1e57f8: Pull complete\nc9a0ccdd60cf: Pull complete\nDigest: sha256:16495f13a78388053f9758e8198d7014139a3ad47d7c3b4d90a5978531dd415d\nStatus: Downloaded newer image for registry.svc.ci.openshift.org/openshift/release:golang-1.13\n ---> 55c82b8e047e\nStep 2/11 : WORKDIR /go/src/github.com/openshift/cloud-credential-operator\nRemoving intermediate container 2d43d6a95d66\n ---> 58ad43f9dcdd\nStep 3/11 : COPY . .\n ---> a1eb9edd1642\nStep 4/11 : ENV GO_PACKAGE github.com/openshift/cloud-credential-operator\n ---> Running in 333c3418f3fa\nRemoving intermediate container 333c3418f3fa\n ---> d2a42ab552c9\nStep 5/11 : RUN go build -ldflags \"-X $GO_PACKAGE/pkg/version.versionFromGit=$(git describe --long --tags --abbrev=7 --match 'v[0-9]*')\" ./cmd/cloud-credential-operator\n ---> Running in e81db11a7556\n\u001b[91mfatal: No names found, cannot describe anything.\n\u001b[0mRemoving intermediate container e81db11a7556\n ---> 5efb41039774\nStep 6/11 : FROM registry.svc.ci.openshift.org/ocp/4.5:base",
+    "raw_stderr_log": "unauthorized: authentication required",
+    "html_url": "https://github.com/openshift/cloud-credential-operator",
+    "repo_commit": "c442add7ccefb90920c86fae9049fd1bcee446a4",
+    "repo_id": 162752436
+  },
+  {
+    "raw_dockerfile": "FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.12 AS builder\nWORKDIR /go/src/github.com/openshift/insights-operator\nCOPY . .\nRUN make build\n\nFROM registry.svc.ci.openshift.org/ocp/4.4:base\nCOPY --from=builder /go/src/github.com/openshift/insights-operator/bin/insights-operator /usr/bin/\nCOPY config/pod.yaml /etc/insights-operator/server.yaml\nCOPY manifests /manifests\nLABEL io.openshift.release.operator=true\nENTRYPOINT [\"/usr/bin/insights-operator\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon  69.56MB\r\r\nStep 1/10 : FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.12 AS builder",
+    "raw_stderr_log": "unauthorized: authentication required",
+    "html_url": "https://github.com/openshift/insights-operator",
+    "repo_commit": "f730f2b81f23b7b19aad4ce322050bf48d061693",
+    "repo_id": 200536544
+  },
+  {
+    "raw_dockerfile": "FROM eu.gcr.io/soundbadger-management/songkick-ruby:2.6\n\nRUN apt-get update\nRUN apt-get -y install libxslt-dev libxml2-dev\n\nCOPY Gemfile* /app/\nCOPY songkick-transport.gemspec /app/\nRUN bundle install\n\nCOPY . /app/\n\nRUN mkdir -p log",
+    "raw_stdout_log": "Sending build context to Docker daemon  139.3kB\r\r\nStep 1/8 : FROM eu.gcr.io/soundbadger-management/songkick-ruby:2.6",
+    "raw_stderr_log": "unauthorized: You don't have the needed permissions to perform this operation, and you may have invalid credentials. To authenticate your request, follow the steps in: https://cloud.google.com/container-registry/docs/advanced-authentication",
+    "html_url": "https://github.com/songkick/transport",
+    "repo_commit": "e3ee356715d24016da8a6a2b8ac0fdb2e65dbb65",
+    "repo_id": 5098049
+  }
+]
