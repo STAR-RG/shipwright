@@ -1,11 +1,22 @@
-# rq4
-How effective isSHIPWRIGHT in reducing the number of broken Dockerfiles in public repositories?
+# Effectiveness of shipwright (submitting real pull requests!)
 
-## Pull Requests
+## Too Long Didn't Read (TLDR)
+
+We provide a breakdown of the pull requests we submitted and whether (at the current date---Jan 21st, 2021) these requests are accepted/rejected/or still pending. From this raw data one can directly reproduce the numbers we use in our paper related to pull request acceptance. (Note: there's been one new rejection since submission---the camera ready will reflect this, and any other changes that occur prior to the camera ready deadline.)
+
+## Details
+
+```
+How effective is shipwright in reducing the number of broken Dockerfiles in public repositories?
+```
+
+With this question we set out to understand whether shipwright, as a tool for automated Dockerfile repair, could be used to make real pull requests and help real developers improve their broken Dockerfiles. A detailed breakdown of our efforts is given below.
+
+### Pull Requests
 
 Here's a listing of links to pull requests made with Shipwright:
 
-### Accepted (19)
+**Accepted (19)**
 
 * https://github.com/AjuntamentdeBarcelona/decidim-barcelona/pull/321
 * https://github.com/realpython/flask-image-search/pull/2
@@ -27,14 +38,14 @@ Here's a listing of links to pull requests made with Shipwright:
 * https://github.com/anurag/fastai-course-1/pull/14
 * https://github.com/gjovanov/facer/pull/18
 
-### Rejected (4)
+**Rejected (4)**
 
 * https://github.com/voxpupuli/puppet-stash/pull/193
 * https://github.com/voxpupuli/puppet-mrepo/pull/117
 * https://github.com/voxpupuli/puppet-fail2ban/pull/156
 * https://github.com/voxpupuli/puppet-puppetboard/pull/289
 
-### In Review (22)
+**In Review (22)**
 
 * https://github.com/CubiCasa/CubiCasa5k/pull/22
 * https://github.com/blueboxgroup/ursula/pull/3005
@@ -58,3 +69,5 @@ Here's a listing of links to pull requests made with Shipwright:
 * https://github.com/gochain/rpc-proxy/pull/56
 * https://github.com/holderdeord/hdo-site/pull/692
 * https://github.com/capn-freako/PyAMI/pull/9
+
+**Last updated: Jan 21st, 2021.**
