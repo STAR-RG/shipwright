@@ -1,5 +1,6 @@
 import re
 from termcolor import colored
+SHOULD_PRINT = False
 
 
 def is_external_failure(outputlog):  # messagemend
@@ -318,4 +319,5 @@ def check_have_silent(outputlog):
 
 
 def message(m):
-    print(colored(m, "green"))
+    if SHOULD_PRINT:
+        print(colored(m, "green"))

@@ -87,7 +87,7 @@ def main():
     for i in range(145):
         if i == 0:
             continue
-        cluster = read_json(f'../Clusters/k{i}.json')
+        cluster = read_json(f'./Clusters/k{i}.json')
         check_shipwright(cluster, i)
 
     print('\n\n\n')
@@ -120,7 +120,7 @@ def experiment():  # rq4
 
 
 def rq3_3():
-    data = read_json('../no-cluster/not-in-clusters-min.json')
+    data = read_json('./no-cluster/not-in-clusters-min.json')
     check_shipwright(data, -999)
     print('\n\n\n')
     print(f'cob{cob}. total {total}')
