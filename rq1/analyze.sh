@@ -3,7 +3,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 TOTAL_BUILT_FILES=$(
-    ls "${DIR}/../data/build-results/" | wc -l | awk '{print $1}'
+    cat "${DIR}/../data/raw-build-results/listing.txt" | \
+    wc -l | awk '{print $1}'
 )
 
 TOTAL_BROKEN_FILES=$(

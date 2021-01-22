@@ -34,3 +34,13 @@ Just running `./shipwright.sh` will show all available commands. To see data rel
 
 Additionally, many of the folders in this repository include additional details on the options for various commands and the data we've included with this artifact. (See, for example, `./data/README.md`.)
 
+## Troubleshooting docker 'permission denied' errors
+
+If you have just set up a fresh Docker installation and are attempting to run the `./shipwright.sh` script, you may encounter `permission denied` errors. Many docker installations are configured so that the user who runs docker is in the `docker` group. To fix this, you can follow these steps ([or reference this link]()):
+
+1. Run `sudo usermod -aG docker ${USER}`
+2. Close all terminals / logout 
+3. Log back in 
+
+The above instructions assume you're on linux. Alternatively, you should be able to run `sudo ./shipwright.sh` if you don't want to add yourself to the `docker` group.
+
