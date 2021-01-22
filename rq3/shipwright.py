@@ -1,3 +1,4 @@
+from sys import argv
 import json
 import csv
 import os
@@ -88,6 +89,23 @@ def read_json(file):
         return cluster
 
 
+def print_artefact_results():
+    print('Done... Results:\n')
+    perc = cob/total * 100
+    print('Total Dockerfiles: %d. Shipwright coverage: %d (%.2f %%).' %
+          (total, cob, perc))
+    c_fix = results_sum["count_fix"]
+    c_rec = results_sum["count_rec"]
+    c_unk = results_sum["count_uknow"]
+
+    p_fix = c_fix / total * 100
+    p_rec = c_rec / total * 100
+    p_unk = c_unk / total * 100
+
+    print('Repairs: %d (%.2f%%).\nSuggestions: %d (%.2f%%).\nUnknown: %d (%.2f%%).' %
+          (c_fix, p_fix, c_rec, p_rec, c_unk, p_unk))
+
+
 def main():
     for i in range(145):
         if i == 0:
@@ -96,10 +114,14 @@ def main():
         check_shipwright(cluster, i)
 
     print('\n\n\n')
-    print(f'cob{cob}. total {total}')
-    print(f'results_sum {results_sum}')
+    print_artefact_results()
+    # print(f'cob{cob}. total {total}')
+    # print(f'results_sum {results_sum}')
     # new_print()
-    save_overleaf_new(results)
+    # save_overleaf_new(results)
+    print('-------------\nResults by cluster:')
+    new_print()
+    print('-------------')
     exit(0)
     # exit(0)
     # print_pattern_clusters()
@@ -120,17 +142,19 @@ def experiment():  # rq4
     cases = read_json('../srcCompletude/analyse.json')
     check_shipwright(cases, 999)
     print('\n\n\n')
-    print(f'cob{cob}. total {total}')
-    print(f'results_sum {results_sum}')
+    print_artefact_results()
+    # print(f'cob{cob}. total {total}')
+    # print(f'results_sum {results_sum}')
 
 
 def rq3_3():
     data = read_json('./no-cluster/not-in-clusters-min.json')
     check_shipwright(data, -999)
     print('\n\n\n')
-    print(f'cob{cob}. total {total}')
-    print(f'results_sum {results_sum}')
-    save_overleaf(results)
+    print_artefact_results()
+    # print(f'cob{cob}. total {total}')
+    # print(f'Total Dockerfiles: {total}. Shipwright coverage {cob}')
+    # save_overleaf(results)
 
 
 def get_urls():
@@ -166,7 +190,7 @@ def print_overleaf(name):
 
 
 def new_print():
-    print('repaired\trecommended\tunknown')
+    print('cluster\trepairs\tsuggestions\tunknown')
     for i, u in enumerate(results):
         print("%d\t%d\t%d\t%d" %
               (i+1, u['fix'] * 100, u['rec'] * 100, u['uknow'] * 100))
@@ -188,14 +212,20 @@ def print_overleaf_new(name):
 
 
 if __name__ == "__main__":
-    EXPERIMENT = "main"
-    if EXPERIMENT == "rq4":
-        print("Running experiment")
-        experiment()
-    elif EXPERIMENT == "main":
-        SAVE_DOCKER_FIX = False
-        main()
-    elif EXPERIMENT == "rq3":
-        rq3_3()
+    if len(argv) == 2:
+        EXPERIMENT = argv[1]
+        if EXPERIMENT == "cluster":
+            print("Running experiment in cluters")
+            SAVE_DOCKER_FIX = False
+            main()
+        elif EXPERIMENT == "no-cluster":
+            print("Running experiment in no-cluster")
+            rq3_3()
+        # elif EXPERIMENT == "rq4":
+        #    print("Running experiment")
+        #    experiment()
+        else:
+            print("Unknown EXPERIMENT")
     else:
-        print("Unknown EXPERIMENT")
+        print("Argument Error: please read the README.md")
+        exit(1)
