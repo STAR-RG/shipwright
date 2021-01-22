@@ -27,3 +27,11 @@ in the `./data/build-results/*/` folder.
 This directory includes the (compressed) pre-processed version of the broken Dockerfiles that we used as input to 
 our clustering algorithm (BERT + HDBSCAN). We hope that, by providing the original pre-processed data, others can
 build new clustering techniques or refine the clustering approach and parameters.
+
+## `./data/non-clustered-data`
+
+This directory contains a (compressed) pre-processed version of the broken Dockerfiles that _did not cluster_ (HDBSCAN, under most configurations, does not place every element into a cluster). As part of `rq3` we analyze clustered and non-clustered data to compare how shipwright performs on either set. This data is used by `./shipwright.sh run-rq3`.
+
+## `./data/clustered-data`
+
+In this folder you can find the clusters we generated and corresponding metadata for each of the broken Dockerfiles that are in each cluster. This data is used by `./shipwright.sh run-rq3`. 

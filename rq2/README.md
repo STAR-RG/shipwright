@@ -6,7 +6,7 @@ If you wish to run things from this directory, you would need `python3` with the
 
 ## Too Long Didn't Read (TLDR)
 
-We provided the pre-processed form of our broken Dockerfiles in the `./data/for-clustering` directory (one gzipped json file per broken Dockerfile). You can use these files to run your own clustering, or our clustering, or you can use our pre-generated clusters in the `./rq3/Clusters` directory.
+We provided the pre-processed form of our broken Dockerfiles in the `./data/for-clustering` directory (one gzipped json file per broken Dockerfile). You can use these files to run your own clustering, or our clustering, or you can use our pre-generated clusters in the `./data/clustered-data` directory.
 
 To spit out some quick output data (and verify things can run) run `./clustering.py` --- this is quick and should print something like the following:
 
