@@ -27,6 +27,8 @@ To run and evaluate this artifact, you can use on or more of the following comma
 ./shipwright.sh run-rq3
 
 # To extract raw build results 
+# NOTE: this uses many CPU cores during decompression
+# and may take a few minutes to complete
 ./shipwright.sh extract
 ```
 
