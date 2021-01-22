@@ -1,0 +1,98 @@
+[
+  {
+    "raw_dockerfile": "FROM base/devel:latest\n\n# fetch dependencies\nRUN pacman --noconfirm -Syu bower cairo giflib graphicsmagick grunt-cli libjpeg-turbo npm\n\n# more dependencies\nWORKDIR /unitdb\nENTRYPOINT npm install && bower install --allow-root && grunt serve",
+    "raw_stdout_log": "Sending build context to Docker daemon  37.76MB\r\r\nStep 1/4 : FROM base/devel:latest",
+    "raw_stderr_log": "manifest for base/devel:latest not found",
+    "html_url": "https://github.com/spooky/unitdb",
+    "repo_commit": "8120ef9ae5bbd186c5521f3120669ef5c6c4ec37",
+    "repo_id": 14520209
+  },
+  {
+    "raw_dockerfile": "# docker create -it --name arch nning2/compile-linux-grsec /bin/bash\n# docker start -ai arch\n\nFROM base/archlinux:latest\nMAINTAINER henning mueller <mail@nning.io>\n\nRUN pacman -Sy --noconfirm base-devel vim git ruby bc openssh \\\n\t&& sed -i s:md5:sha256:g /etc/makepkg.conf \\\n\t&& useradd -m compile \\\n\t&& rm -rf /var/cache/pacman/pkg/* \\\n\t&& su - compile -c \"git clone git://github.com/nning/linux-grsec.git\" \\\n\t&& su - compile -c \"gem install nokogiri\" \\\n\t&& su - compile -c \"gpg --keyserver pgp.mit.edu --recv-keys 79BE3E4300411886 38DBBDC86092693E 44D1C0F82525FE49\"",
+    "raw_stdout_log": "Sending build context to Docker daemon  2.821MB\r\r\nStep 1/3 : FROM base/archlinux:latest",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/nning/linux-grsec",
+    "repo_commit": "aa69b963e287ccbe0ec5bbc97fcf3d931b85fadd",
+    "repo_id": 15210504
+  },
+  {
+    "raw_dockerfile": "# libssh server vulnerable to cve-2018-10933 with a simple PoC demo\nFROM base/archlinux\nADD libssh-0.8.3.tar.xz /root\nADD cve-2018-10933.patch /root\nADD server.patch /root\nRUN pacman -Syu --noconfirm &&\\\n    pacman -S patch net-tools vim openssh make gcc cmake --noconfirm &&\\\n    cp -r /root/libssh-0.8.3 /root/exploit-libssh-0.8.3 &&\\\n    cd /root/libssh-0.8.3 &&\\\n    mkdir build &&\\\n    cd build &&\\\n    cmake .. &&\\\n    make &&\\\n    make install &&\\\n    cd examples &&\\\n    make &&\\\n    cd /root/exploit-libssh-0.8.3 &&\\\n    patch -p0 < /root/cve-2018-10933.patch &&\\\n    patch -p0 < /root/server.patch &&\\\n    mkdir build && \\\n    cd build && \\\n    cmake .. && \\\n    make &&\\\n    make install &&\\\n    cd /root &&\\\n    ssh-keygen -t dsa -f ssh_host_dsa_key -N '' &&\\\n    ssh-keygen -t rsa -b 2048 -f ssh_host_rsa_key -N '' \nEXPOSE 22\nCMD [\"/root/exploit-libssh-0.8.3/build/examples/ssh_server_fork\", \"-d\", \"/root/ssh_host_dsa_key\", \"-k\", \"/root/ssh_host_rsa_key\", \"-p\", \"22\", \"-v\", \"0.0.0.0\" ]",
+    "raw_stdout_log": "Sending build context to Docker daemon  1.572MB\r\r\nStep 1/7 : FROM base/archlinux",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/hackerhouse-opensource/cve-2018-10933",
+    "repo_commit": "88cb125b2b2591ccdbac619840a4cb1765739179",
+    "repo_id": 153675108
+  },
+  {
+    "raw_dockerfile": "FROM seek/listo:latest\nADD data /etc/listo/data\nENV DATA_DIR=/etc/listo/data",
+    "raw_stdout_log": "Sending build context to Docker daemon    788kB\r\r\nStep 1/3 : FROM seek/listo:latest",
+    "raw_stderr_log": "manifest for seek/listo:latest not found",
+    "html_url": "https://github.com/seek-oss/listo",
+    "repo_commit": "69acf7ac706dde74a37ff54351d5f392febb4985",
+    "repo_id": 238134248
+  },
+  {
+    "raw_dockerfile": "ARG IMAGE_VERSION=latest\nFROM shridh0r/frappe:$IMAGE_VERSION\nMAINTAINER Shridhar <shridharpatil2792@gmail.com>\n\nCOPY ./start_up.sh /home/frappe/start_up.sh\nUSER root\nRUN chmod 777 /home/frappe/start_up.sh\nARG APP_PATH=https://github.com/frappe/erpnext.git\nARG BRANCH=master\n\nUSER frappe\nWORKDIR /home/frappe/frappe-bench\nRUN ../start_up.sh build\n# CMD [\"/home/frappe/frappe-bench/env/bin/gunicorn\", \"-b\", \"0.0.0.0:8000\", \"--workers\", \"28\", \"--threads\", \"4\", \"-t\", \"120\", \"frappe.app:application\", \"--preload\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon   93.7kB\r\r\nStep 1/11 : ARG IMAGE_VERSION=latest\nStep 2/11 : FROM shridh0r/frappe:$IMAGE_VERSION",
+    "raw_stderr_log": "manifest for shridh0r/frappe:latest not found",
+    "html_url": "https://github.com/shridarpatil/erpnext-docker",
+    "repo_commit": "c5ce329b32136e2c96c39c1210bfb9b27c22aeae",
+    "repo_id": 238134888
+  },
+  {
+    "raw_dockerfile": "FROM base/archlinux\nMAINTAINER Wei Tang <hi@beyond.codes>\n\nRUN pacman -Sy archlinux-keyring --noconfirm\nRUN pacman -Syyu --noconfirm\nRUN pacman-db-upgrade\nRUN pacman -S --noconfirm python-django python-scikit-learn python-beautifulsoup4 python-lxml python-pip jdk8-openjdk gcc ruby postgresql-libs python-psycopg2 make python-nltk\nENV PATH /root/.gem/ruby/2.3.0/bin:$PATH\n\nRUN gem install sass compass\nRUN pip install django-guardian boilerpipe-py3 feedparser markdown simplejson django-allauth django_compressor mongoengine blinker\n\nRUN mkdir /app\nADD . /app\nWORKDIR /app\n\nEXPOSE 8000",
+    "raw_stdout_log": "Sending build context to Docker daemon  2.629MB\r\r\nStep 1/13 : FROM base/archlinux",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/sorpaas/reread",
+    "repo_commit": "eea830145ca6b8db16cc4923d12b6cf2b49dc773",
+    "repo_id": 28297259
+  },
+  {
+    "raw_dockerfile": "FROM base/archlinux\n\nMAINTAINER kfei <kfei@kfei.net>\n\nENV GOPATH /go\nENV PATH $GOPATH/bin:$PATH\n\nRUN pacman -Syy && pacman -S --noconfirm gcc git go \\\n    && go get -u github.com/kfei/sshcam \\\n    && cd $GOPATH/src/github.com/kfei/sshcam \\\n    && go build \\\n    && go install \\\n    && pacman --noconfirm -R gcc git go \\\n    && pacman --noconfirm -R $(pacman -Qdtq)\n\nVOLUME [\"/.sshcam\"]\n\nENTRYPOINT [\"/go/bin/sshcam\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon  560.6kB\r\r\nStep 1/7 : FROM base/archlinux",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/kfei/sshcam",
+    "repo_commit": "cdccac039894f6bc4f52ee7413fedfffd751a45b",
+    "repo_id": 28413178
+  },
+  {
+    "raw_dockerfile": "FROM base/archlinux\nRUN pacman -Syy\nRUN pacman --noconfirm -S git\nRUN pacman --noconfirm -S binutils\nRUN pacman --noconfirm -S sudo\nRUN pacman --noconfirm -S gcc\nRUN pacman --noconfirm -S pkg-config\nRUN pacman --noconfirm -S make \nRUN pacman --noconfirm -S fakeroot \n\nRUN mkdir /home/build &&\\\n    useradd build &&\\\n    usermod -L build &&\\\n    chown build:build /home/build\n\nWORKDIR /home/build\n\nRUN echo \"build ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers\nRUN echo \"root ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers\n\nUSER build\n\nRUN  git clone https://aur.archlinux.org/package-query.git\nWORKDIR package-query\nRUN makepkg -si --noconfirm\nWORKDIR ..\n\nUSER build\nRUN git clone https://aur.archlinux.org/yaourt.git\nWORKDIR yaourt\nRUN makepkg -si --noconfirm\nWORKDIR ..\n\nRUN yaourt -S inception-android --noconfirm\n\nENTRYPOINT [\"incept\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon  815.1kB\r\r\nStep 1/25 : FROM base/archlinux",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/tgalal/inception",
+    "repo_commit": "4c36b4860417db482d9fefb4f473404339bb2027",
+    "repo_id": 31389173
+  },
+  {
+    "raw_dockerfile": "FROM base/archlinux\n\nCOPY . /usr/local/plebtrk\nWORKDIR /usr/local/plebtrk\n\nRUN pacman --noconfirm -Sy base-devel fftw alsa-utils inotify-tools\nRUN cd ./Tracker/src && make && ./INSTALL.sh && cd ../../Interpreter/src && make && ./INSTALL.sh\n\nENTRYPOINT [\"./Tracker/src/plebtrk\"]",
+    "raw_stdout_log": "Sending build context to Docker daemon  58.77MB\r\r\nStep 1/6 : FROM base/archlinux",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/danfrz/PLEBTracker",
+    "repo_commit": "f6aa7078c3f39e9c8b025e70e7dbeab19119e213",
+    "repo_id": 55498712
+  },
+  {
+    "raw_dockerfile": "# ArchLinux image with base-devel\nFROM base/devel\n\nRUN sed -i -E 's/^#(en_US.UTF-8 UTF-8)/\\1/' /etc/locale.gen && \\\n    locale-gen && \\\n    (echo 'LANG=en_US.UTF-8' > /etc/locale.conf)\n\nRUN pacman -Syu --noconfirm && pacman -S --noconfirm git\n\nWORKDIR /root/.dotfiles\n\nCOPY . .\n\nRUN scripts/dotf install\n\nCMD /usr/sbin/zsh",
+    "raw_stdout_log": "Sending build context to Docker daemon  14.79MB\r\r\nStep 1/7 : FROM base/devel",
+    "raw_stderr_log": "manifest for base/devel:latest not found",
+    "html_url": "https://github.com/elentok/dotfiles",
+    "repo_commit": "e8b957500c584676b52e161dc78ad5c202d8921a",
+    "repo_id": 7560963
+  },
+  {
+    "raw_dockerfile": "FROM base/archlinux\n\nRUN echo \"[archlinuxfr]\" >> /etc/pacman.conf && \\\n    echo \"SigLevel = Never\" >> /etc/pacman.conf && \\\n    echo \"Server = http://repo.archlinux.fr/x86_64\" >> /etc/pacman.conf &&\\\n    pacman -Sy\n\n# Install Yaourt\nRUN pacman --sync --noconfirm --noprogressbar --quiet sudo yaourt\n\n# Install the following tools:\n#   - build-essential\n#   - grup-mkrescue\n#   - nasm\n#   - xorriso\nRUN yaourt --noconfirm -Sa \\\n    gcc make rustup \\\n    autoconf autoconf automake libtool \\\n    base-devel \\\n    ca-certificates \\\n    curl \\\n    git \\\n    nasm \\\n    xorriso\n\n# Install Rustup\nRUN curl https://sh.rustup.rs -sSf | \\\n    sh -s -- --default-toolchain nightly -y\n\n# Add cargo to PATH\nENV PATH=/root/.cargo/bin:$PATH\n\nRUN source ~/.cargo/env\n\n# Add Rust source components\nRUN rustup component add rust-src\n\nRUN ~/.cargo/bin/cargo-install-update || cargo install cargo-update\nRUN ~/.cargo/bin/rustfmt || cargo install rustfmt\n\n# Install Xargo and force update\nRUN cargo install xargo\nRUN cargo install-update -a\n\n# Define a volume and set the working directory\nVOLUME [\"/code\"]\nWORKDIR /code",
+    "raw_stdout_log": "Sending build context to Docker daemon  8.704kB\r\r\nStep 1/14 : FROM base/archlinux",
+    "raw_stderr_log": "manifest for base/archlinux:latest not found",
+    "html_url": "https://github.com/Infinity-OS/infinity",
+    "repo_commit": "d2423c82f7d60b9ec5f8623c1120cfd5871515a1",
+    "repo_id": 78582657
+  },
+  {
+    "raw_dockerfile": "FROM tozd/runit\n\nEXPOSE 3000/tcp\n\nVOLUME /var/log/meteor\n\nENV HOME /\n\nRUN apt-get update -q -q && \\\n apt-get --yes --force-yes install curl git libcairo2-dev libfreetype6-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++ && \\\n curl http://meteor.peerlibrary.org/ | sed s/--progress-bar/-sL/g | sh && \\\n export PATH=$HOME/.meteor/tools/latest/bin:$PATH && \\\n npm config set unsafe-perm true && \\\n npm install -g git+https://github.com/oortcloud/meteorite.git\n\nCOPY ./etc /etc\n\nCOPY . /source\n\nRUN export PATH=$HOME/.meteor/tools/latest/bin:$PATH && \\\n cp -a /source /build && \\\n rm -rf /source && \\\n cd /build && \\\n rm -rf etc && \\\n ./prepare.sh && \\\n mrt bundle /bundle.tgz && \\\n cd / && \\\n tar xf /bundle.tgz && \\\n rm /bundle.tgz && \\\n cd /build && \\\n git describe --always --dirty=+ > /bundle/gitversion && \\\n cd / && \\\n rm -rf /build && \\\n adduser --system --group meteor --home /\n\nENV ROOT_URL http://example.com\nENV MAIL_URL smtp://user:password@mailhost:port/\nENV METEOR_SETTINGS {}\nENV PORT 3000\nENV MONGO_URL mongodb://mongodb/meteor\nENV MONGO_OPLOG_URL mongodb://mongodb/local",
+    "raw_stdout_log": "Sending build context to Docker daemon  18.62MB\r\r\nStep 1/14 : FROM tozd/runit",
+    "raw_stderr_log": "manifest for tozd/runit:latest not found",
+    "html_url": "https://github.com/peerlibrary/peerlibrary",
+    "repo_commit": "7a5f21242f6e51bcc45918b045a5010eeecf69b4",
+    "repo_id": 8770296
+  }
+]

@@ -3,6 +3,7 @@ import json
 import csv
 import os
 import re
+import tqdm
 from config import SHOULD_PRINT
 from utils import is_external_failure
 from utils import is_external_failure_outputerror
@@ -38,7 +39,7 @@ def salve_results(id, count_rec, count_fix, count_uknow, l):
     results.append(res)
 
 
-def check_shipwright(cluster, id):
+def check_shipwright(cluster, id, progress=False):
     if SHOULD_PRINT:
         print(f"cluster id: {id}")
     l = len(cluster)
@@ -46,7 +47,12 @@ def check_shipwright(cluster, id):
     count_fix = 0
     count_uknow = 0
     pattern_set = set()
-    for c in cluster:
+    cluster_iter = (
+        tqdm.tqdm(cluster, desc='Processing:>') if progress else cluster
+    ) 
+    for c in cluster_iter:
+        rid = c['repo_id'] if 'repo_id' in c else c['meta']['repo_id']
+        hurl = c['html_url'] if 'repo_id' in c else c['meta']['html_url']
         if SHOULD_PRINT:
             print('--*--\n%s' % c['html_url'])
         outputlog = c["raw_stdout_log"]
@@ -56,7 +62,7 @@ def check_shipwright(cluster, id):
             print(f'string: {s_string}')
 
         cod_transform = transform(s_string, c['raw_dockerfile'],
-                                  c['repo_id'], c['raw_stdout_log'], c['html_url'])
+                                  rid, c['raw_stdout_log'], hurl)
         cod_exter = is_external_failure(outputlog)
         cod_exter_error = is_external_failure_outputerror(outputerror)
 
@@ -75,7 +81,7 @@ def check_shipwright(cluster, id):
 
         else:
             if SHOULD_PRINT:
-                print("nao entrou %d" % c['repo_id'])
+                print("nao entrou %d" % rid)
             count_uknow += 1
     pattern_clusters.append(len(pattern_set))
 
@@ -90,9 +96,9 @@ def read_json(file):
 
 
 def print_artefact_results():
-    print('Done... Results:\n')
+    print('  + Done!\nResults:')
     perc = cob/total * 100
-    print('Total Dockerfiles: %d. Shipwright coverage: %d (%.2f %%).' %
+    print('  + Total Dockerfiles: %d.\n  + Shipwright coverage: %d (%.2f %%).' %
           (total, cob, perc))
     c_fix = results_sum["count_fix"]
     c_rec = results_sum["count_rec"]
@@ -102,7 +108,7 @@ def print_artefact_results():
     p_rec = c_rec / total * 100
     p_unk = c_unk / total * 100
 
-    print('Repairs: %d (%.2f%%).\nSuggestions: %d (%.2f%%).\nUnknown: %d (%.2f%%).' %
+    print('  + Repairs: %d (%.2f%%).\n  + Suggestions: %d (%.2f%%).\n  + Unknown: %d (%.2f%%).' %
           (c_fix, p_fix, c_rec, p_rec, c_unk, p_unk))
 
 
@@ -110,10 +116,9 @@ def main():
     for i in range(145):
         if i == 0:
             continue
-        cluster = read_json(f'./Clusters/k{i}.json')
+        cluster = read_json(f'/app/data/clustered-data/k{i}.json')
         check_shipwright(cluster, i)
 
-    print('\n\n\n')
     print_artefact_results()
     # print(f'cob{cob}. total {total}')
     # print(f'results_sum {results_sum}')
@@ -141,16 +146,16 @@ def main():
 def experiment():  # rq4
     cases = read_json('../srcCompletude/analyse.json')
     check_shipwright(cases, 999)
-    print('\n\n\n')
     print_artefact_results()
     # print(f'cob{cob}. total {total}')
     # print(f'results_sum {results_sum}')
 
 
 def rq3_3():
-    data = read_json('./no-cluster/not-in-clusters-min.json')
-    check_shipwright(data, -999)
-    print('\n\n\n')
+    print('Loading data...')
+    data = read_json('/not-in-clusters.json')
+    print('  + Done!')
+    check_shipwright(data, -999, progress=True)
     print_artefact_results()
     # print(f'cob{cob}. total {total}')
     # print(f'Total Dockerfiles: {total}. Shipwright coverage {cob}')
@@ -214,12 +219,12 @@ def print_overleaf_new(name):
 if __name__ == "__main__":
     if len(argv) == 2:
         EXPERIMENT = argv[1]
-        if EXPERIMENT == "cluster":
-            print("Running experiment in cluters")
+        if EXPERIMENT == "clustered":
+            print("Running on clustered data:")
             SAVE_DOCKER_FIX = False
             main()
-        elif EXPERIMENT == "no-cluster":
-            print("Running experiment in no-cluster")
+        elif EXPERIMENT == "non-clustered":
+            print("Running on non-clustered data:")
             rq3_3()
         # elif EXPERIMENT == "rq4":
         #    print("Running experiment")

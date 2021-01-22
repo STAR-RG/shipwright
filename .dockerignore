@@ -1,2 +1,3 @@
 *
 !Dockerfile
+!data/non-clustered-data/not-in-clusters.json.xz

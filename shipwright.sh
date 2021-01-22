@@ -11,7 +11,7 @@ elif [ "${1}" == "run-rq2" ]; then
 elif [ "${1}" == "run-rq2-do-clustering" ]; then
     CMD="/app/rq2/clustering.py --do-clustering"
 elif [ "${1}" == "run-rq3" ]; then
-    CMD="echo todo"
+    CMD="python3 /app/rq3/shipwright.py clustered ; python3 /app/rq3/shipwright.py non-clustered"
 elif [ "${1}" == "extract" ]; then
     CMD="/app/data/raw-build-results/extract.sh"
 else
