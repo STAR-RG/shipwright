@@ -2,6 +2,7 @@ import json
 import csv
 import os
 import re
+from config import SHOULD_PRINT
 from utils import is_external_failure
 from utils import is_external_failure_outputerror
 import keywords
@@ -37,18 +38,21 @@ def salve_results(id, count_rec, count_fix, count_uknow, l):
 
 
 def check_shipwright(cluster, id):
-    print(f"cluster id: {id}")
+    if SHOULD_PRINT:
+        print(f"cluster id: {id}")
     l = len(cluster)
     count_rec = 0
     count_fix = 0
     count_uknow = 0
     pattern_set = set()
     for c in cluster:
-        print('--*--\n%s' % c['html_url'])
+        if SHOULD_PRINT:
+            print('--*--\n%s' % c['html_url'])
         outputlog = c["raw_stdout_log"]
         outputerror = c["raw_stderr_log"]
         s_string = search_strings(keywords.keys(c))
-        print(f'string: {s_string}')
+        if SHOULD_PRINT:
+            print(f'string: {s_string}')
 
         cod_transform = transform(s_string, c['raw_dockerfile'],
                                   c['repo_id'], c['raw_stdout_log'], c['html_url'])
@@ -69,7 +73,8 @@ def check_shipwright(cluster, id):
             pattern_set.add(200)
 
         else:
-            print("nao entrou %d" % c['repo_id'])
+            if SHOULD_PRINT:
+                print("nao entrou %d" % c['repo_id'])
             count_uknow += 1
     pattern_clusters.append(len(pattern_set))
 

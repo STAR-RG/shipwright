@@ -1,6 +1,6 @@
 import re
 from termcolor import colored
-SHOULD_PRINT = False
+from config import SHOULD_PRINT
 
 
 def is_external_failure(outputlog):  # messagemend

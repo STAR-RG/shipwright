@@ -15,13 +15,13 @@ RESULT_SET_LEN = 5
 NUM_URLS = 10      # number of urls returned by google in one query
 NUM_MAX_DDMIN = 5  # maximum number of iterations in ddmin
 # for internal control in spreadsheet
-HASH_ANALYZED = []
+#HASH_ANALYZED = []
 count = 20
 
 is_alpine = False
 
-with open(os.path.dirname(os.path.abspath(__file__)) + '/analyzed.txt', 'r') as file:
-    HASH_ANALYZED = file.read().splitlines()
+# with open(os.path.dirname(os.path.abspath(__file__)) + '/analyzed.txt', 'r') as file:
+#    HASH_ANALYZED = file.read().splitlines()
 
 
 def analyze_dir(logdir):

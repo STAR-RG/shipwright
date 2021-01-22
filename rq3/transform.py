@@ -4,6 +4,8 @@ import os
 import re
 import copy
 from pathlib import Path
+from config import SHOULD_PRINT
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = HERE + "/../"
 FIXED = BASE + "FIXED/"
@@ -50,7 +52,7 @@ def save_docker_fix(filename, lines, dir=''):
 
     if os.path.isfile(FIXED + dir + filename):
         return
-    print(filename)
+    message(filename)
     with open(FIXED + dir + filename, "w") as f:
         f.write('\n'.join(lines))
 
@@ -63,7 +65,7 @@ def transform_1(filename, lines):
             pos = i
             break
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
     lines[pos] = "FROM ubuntu:18.04\n"
     save_docker_fix(filename, lines, '1/')
@@ -81,7 +83,7 @@ def transform_1_2(filename, lines):
             break
 
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
 
     lines[pos_word] = lines[pos_word].replace('python-pip', '')
@@ -106,7 +108,7 @@ def transform_2(filename, lines, group):
             pos = i
             break
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
     a = ""
     if "alpine" in ' '.join(lines):  # check if is a alpine version
@@ -139,8 +141,8 @@ def transform_4(filename, lines, group):  # 51089865
     try:
         new_package = new_packages[package]
     except KeyError:
-        print('WARNING: file: %s package is not defined: %s' %
-              (filename, package))
+        message('WARNING: file: %s package is not defined: %s' %
+                (filename, package))
         return
 
     pos = None
@@ -149,9 +151,9 @@ def transform_4(filename, lines, group):  # 51089865
             pos = i
             break
     if pos == None:
-        print("Could not find package: %s" % filename)
+        message("Could not find package: %s" % filename)
         return
-    print(filename)
+    message(filename)
     lines[pos] = lines[pos].replace(package, new_package)
     save_docker_fix(filename, lines, '4/')
 
@@ -163,7 +165,7 @@ def transform_5(filename, lines, raw_dockerfile, search_string):
     log_lib = search_string.split(':')[-2].strip()
     # for cases like ./configure: not found Docker
     if '/' in log_lib or 'cd' in log_lib or log_lib.endswith('.sh') or 'sudo' in log_lib:
-        print('EXTERNAL FAILURE: %s -> %s' % (filename, log_lib))
+        message('EXTERNAL FAILURE: %s -> %s' % (filename, log_lib))
         return
     if is_alpine:
         new_libs = {**new_libs, **new_libs_alpine}
@@ -186,10 +188,10 @@ def transform_5(filename, lines, raw_dockerfile, search_string):
             pos = i
             break
     if pos == None:
-        print("Could not find 'from' %s" % filename)
+        message("Could not find 'from' %s" % filename)
         return
     new_lines = lines[:pos+1] + [new_code] + lines[pos+1:]
-    print('new code: %s -> %s' % (new_code, filename))
+    message('new code: %s -> %s' % (new_code, filename))
     save_docker_fix(filename, new_lines, '5/')
 
 
@@ -204,11 +206,11 @@ def transform_6(filename, lines, path='6/'):
             elif image == 'debian':
                 new_image = 'debian:10'
             else:
-                print(f'INVALID IMGAEEEE {image}. {filename}')
+                message(f'INVALID IMGAEEEE {image}. {filename}')
             pos = i
             break
     if pos == None or new_image == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
 
     lines[pos] = "FROM " + new_image + "\n"
@@ -235,7 +237,7 @@ def transform_7(filename, lines, group):
             pos = i
             break
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
     version = group.split(' ')[-1]
     new_image = "ruby:" + version
@@ -280,7 +282,7 @@ def transform_11(filename, lines):
             pos = i
             break
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
 
     line = lines[pos].strip()
@@ -296,7 +298,7 @@ def transform_12(filename, lines):
             pos = i
             break
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
     new_commands = "RUN sed -i.bak -r 's/(archive|security).ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list\nRUN apt-get -y update\n"
     new_lines = lines[:pos+1] + [new_commands] + lines[pos+1:]
@@ -317,7 +319,7 @@ def transform13(filename, lines, group, version):
             pos = i
             break
     if pos == None:
-        print("Could not find %s" % filename)
+        message("Could not find %s" % filename)
         return
     for p in new_package.keys():
         lines[pos] = lines[pos].replace(p, new_package[p])
@@ -351,62 +353,62 @@ def transform(search_string, lines, filename, log, git_):
 
     if 'Unable to locate package python-pip' in log and "ubuntu" in raw_dockerfile:
         transform_1(filename, lines)
-        print('Aentrou 1')
+        message('Aentrou 1')
         cOUNT += 1
-        print(f'AAAA{cOUNT}')
+        message(f'AAAA{cOUNT}')
         return 1
     r = re.search('requires (r|R)uby version >= \d\.\d(\.\d|)', log)
     if r is not None:
         transform_2(filename, lines, r.group())
-        print('entrou 2')
+        message('entrou 2')
         return 2
     elif "Rpmdb checksum dCDPT pkg checksums" in search_string:
         # transform_3(filename, lines)
-        print('entrou 3')
+        message('entrou 3')
         return 3
     r = re.search('Package \'.* has no installation candidate', log)
     if r is not None:
         transform_4(filename, lines, r.group())
-        print('entrou 4')
+        message('entrou 4')
         return 4
     elif "conda: not found" in log and "curl" in raw_dockerfile and "conda" in raw_dockerfile:
-        print('entrou 11')
+        message('entrou 11')
         #transform_11(filename, lines)
         return 11
     elif re.match(r'sh:.*:*', search_string) is not None:
         transform_5(filename, lines, raw_dockerfile, search_string)
-        print('entrou 5')
+        message('entrou 5')
         return 5
     elif "Some index files failed download" in search_string:
         transform_6(filename, lines)
-        print('entrou 6')
+        message('entrou 6')
         return 6
     r = re.search("but your Gemfile specified [0-9|\.]+", log)
     if r is not None and "ruby:" in raw_dockerfile.lower():
-        print('entrou 7')
+        message('entrou 7')
         return 7
         # transform_7(filename, lines, r.group())
     elif "invalid byte sequence in US-ASCII" in log and "ruby:" in raw_dockerfile.lower():
-        print('entrou 8')
+        message('entrou 8')
         transform_8(filename, lines)
         transform_8_2(filename, lines)
         return 8
     elif "bzr (missing):" in log:
-        print('entrou 9')
+        message('entrou 9')
         transform_9(filename, lines)
         return 9
     elif "E: Unable to fetch some archives, maybe run apt-get" in log:
-        print('entrou 12')
+        message('entrou 12')
         transform_12(filename, lines)
         return 12
 
     elif "does not have a Release file" in log:
-        print('entrou 14')
+        message('entrou 14')
         #transform_6(filename, lines, path="13/")
 
     r = re.search("(python-dev|py2-pip|python) \(missing\)", log)
     if r is not None:
-        print('entrou 13')
+        message('entrou 13')
         lines3 = copy.deepcopy(lines)
         transform13(filename, lines, r.group(), '2')
         transform13(filename, lines3, r.group(), '3')
@@ -415,11 +417,11 @@ def transform(search_string, lines, filename, log, git_):
     r = re.search("Cannot uninstall '.*'", log)
     if r is not None:
         transform_15(filename, lines)
-        print('entrou 15')
+        message('entrou 15')
         return 15
 
     else:
-        # print('fail %d' % filename)
+        # message('fail %d' % filename)
         return False
 
 
@@ -448,12 +450,17 @@ def getFrom(case_dict):
         lines = read_dockerfile(filename)
         for line in lines:
             if line.strip().upper().startswith("FROM "):
-                print(line)
+                message(line)
                 v = line.split(' ')[-1].split(':')[0]
                 try:
                     from_dict[v] += 1
                 except Exception as _:
                     from_dict[v] = 1
+
+
+def message(text):
+    if SHOULD_PRINT:
+        print(text)
 
 
 if __name__ == '__main__':
