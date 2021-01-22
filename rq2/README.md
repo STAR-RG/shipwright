@@ -31,6 +31,8 @@ Printing details:
     ['add failed : failed to get http : / / repo1 . maven . org / maven2 / org / codehaus / cargo / cargo jetty 7 and onwards deployer / 1 . 4 . 4 / cargo jetty 7 and onwards deployer 1 . 4 . 4 . war with status 501 https required : 501 https required . ', 'use https : / / repo1 . maven . org / maven2 / ', 'more information at https : / / links . sonatype . com / central / 501 https required']
 ```
 
+**Note:** in the above, you will see output that looks like an error. This is showing you an example of the `stderr` from one of the many failing Dockerfile builds we obtained---it is not an error in the script :)
+
 ## Details
 
 ```
