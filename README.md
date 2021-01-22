@@ -36,7 +36,7 @@ Additionally, many of the folders in this repository include additional details 
 
 ## Troubleshooting docker 'permission denied' errors
 
-If you have just set up a fresh Docker installation and are attempting to run the `./shipwright.sh` script, you may encounter `permission denied` errors. Many docker installations are configured so that the user who runs docker is in the `docker` group. To fix this, you can follow these steps ([or reference this link]()):
+If you have just set up a fresh Docker installation and are attempting to run the `./shipwright.sh` script, you may encounter `permission denied` errors. Many docker installations are configured so that the user who runs docker is in the `docker` group. To fix this, you can follow these steps ([or reference this link](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket)):
 
 1. Run `sudo usermod -aG docker ${USER}`
 2. Close all terminals / logout 
