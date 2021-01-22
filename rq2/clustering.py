@@ -21,6 +21,8 @@ for file in tqdm.tqdm(os.listdir(DATA_PREFIX + '/for-clustering'), desc="Loading
         data.append(json.loads(fin.read().decode('utf-8')))
 print('  + Done!')
 
+data = sorted(data, key=lambda x: x['clean_stderr_log'])
+
 print('Printing details:')
 print('  + Number of records: {}'.format(len(data)))
 print('  + Available fields:')

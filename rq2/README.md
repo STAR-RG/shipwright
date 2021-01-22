@@ -28,7 +28,7 @@ Printing details:
     + data[n].raw_dockerfile
     + data[n].clean_stdout_log
   + Example of pre-processed data we used for clustering:
-    ['the command / bin / sh c go wrapper download returned a non zero code : 1']
+    ['add failed : failed to get http : / / repo1 . maven . org / maven2 / org / codehaus / cargo / cargo jetty 7 and onwards deployer / 1 . 4 . 4 / cargo jetty 7 and onwards deployer 1 . 4 . 4 . war with status 501 https required : 501 https required . ', 'use https : / / repo1 . maven . org / maven2 / ', 'more information at https : / / links . sonatype . com / central / 501 https required']
 ```
 
 ## Details
